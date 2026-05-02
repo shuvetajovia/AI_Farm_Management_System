@@ -1,0 +1,93 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Manage Product{% endblock %}
+{% block header %}{% if object %}Edit Product{% else %}Add Product{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-9">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-5">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-8 mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small ls-1">Product
+                                Name</label>
+                            <input type="text" name="name" class="form-control form-control-lg"
+                                value="{{ form.name.value|default:'' }}" required>
+                            {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small ls-1">Type</label>
+                            <select name="product_type" class="form-select form-select-lg">
+                                {% for value, label in form.fields.product_type.choices %}
+                                <option value="{{ value }}" {% if form.product_type.value == value|stringformat:"s" %}selected{% endif %}>
+                                    {{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label fw-bold text-secondary small">Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">₹</span>
+                                <input type="number" step="0.01" name="price" class="form-control"
+                                    value="{{ form.price.value|default:'' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label fw-bold text-secondary small">Unit</label>
+                            <input type="text" name="unit" class="form-control"
+                                value="{{ form.unit.value|default:'kg' }}" placeholder="e.g. kg, L, pcs">
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label fw-bold text-secondary small">Stock Quantity</label>
+                            <input type="number" name="stock_quantity" class="form-control"
+                                value="{{ form.stock_quantity.value|default:'0' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary small">Reorder Level</label>
+                        <input type="number" name="reorder_level" class="form-control"
+                            value="{{ form.reorder_level.value|default:'10' }}">
+                        <div class="form-text text-muted">Stock alert when quantity drops below this.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary text-uppercase small ls-1">Description</label>
+                        <textarea name="description" class="form-control"
+                            rows="4">{{ form.description.value|default:'' }}</textarea>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="form-label fw-bold text-secondary small">Product Image (Upload or URL)</label>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <input type="file" name="image" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="url" name="image_url" class="form-control"
+                                    placeholder="https://example.com/image.jpg"
+                                    value="{{ form.image_url.value|default:'' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'custom_admin:product_list' %}"
+                            class="btn btn-light text-muted px-4 me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-premium btn-lg px-5 shadow-sm">
+                            <i class="fas fa-save me-2"></i>Save Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

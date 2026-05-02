@@ -1,0 +1,356 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analysis Results - Smart Agriculture{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+
+    <!-- Header Section -->
+    <div class="glass-card border-0 rounded-4 overflow-hidden shadow-lg fade-in mb-5 p-0">
+        <div class="p-4 p-md-5 position-relative text-white"
+            style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="position-relative z-1">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                    <div>
+                        <span
+                            class="badge bg-white text-success bg-opacity-25 backdrop-blur border border-white border-opacity-25 rounded-pill px-3 py-2 mb-3 shadow-sm">
+                            <i class="fas fa-check-circle me-1"></i> Analysis Complete
+                        </span>
+                        <h1 class="display-5 fw-bold mb-2 text-white">Analysis for {{ land.name }}</h1>
+                        <p class="mb-0 opacity-90"><i class="fas fa-map-marker-alt me-2"></i>{{ land.location }} | <i
+                                class="fas fa-calendar-alt ms-3 me-2"></i>{{ soil_data.date_tested }}</p>
+                    </div>
+                    <div class="mt-4 mt-md-0 text-center text-md-end">
+                        <div
+                            class="glass-card bg-white bg-opacity-10 border-0 p-3 d-inline-block text-start backdrop-blur hover-scale">
+                            <small class="text-uppercase ls-1 opacity-75 d-block mb-1">Soil Type</small>
+                            <h4 class="mb-0 fw-bold">{{ land.soil_type }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Decorative BG -->
+            <i class="fas fa-flask position-absolute text-white"
+                style="bottom: -10px; right: 20px; font-size: 10rem; opacity: 0.15; transform: rotate(-15deg);"></i>
+        </div>
+
+        <!-- Soil Data Summary -->
+        <div class="p-4 bg-light bg-opacity-50 border-bottom">
+            <h5 class="fw-bold text-success mb-4"><i class="fas fa-microscope me-2"></i>Soil Nutrient Profile</h5>
+            <div class="row g-3">
+                <div class="col-6 col-md-2"> <!-- pH -->
+                    <div
+                        class="p-3 bg-white rounded-3 shadow-sm text-center h-100 border-bottom border-4 {% if soil_data.ph_level < 6 %}border-warning{% elif soil_data.ph_level > 7.5 %}border-warning{% else %}border-success{% endif %} hover-lift">
+                        <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.75rem;">pH
+                            Level</small>
+                        <h3 class="mb-0 fw-bold text-dark">{{ soil_data.ph_level }}</h3>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2"> <!-- Nitrogen -->
+                    <div
+                        class="p-3 bg-white rounded-3 shadow-sm text-center h-100 border-bottom border-4 border-primary hover-lift">
+                        <small class="text-muted text-uppercase d-block mb-1"
+                            style="font-size: 0.75rem;">Nitrogen</small>
+                        <h4 class="mb-0 fw-bold text-primary">{{ soil_data.nitrogen }} <span
+                                class="fs-6 text-muted">ppm</span></h4>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2"> <!-- Phosphorus -->
+                    <div
+                        class="p-3 bg-white rounded-3 shadow-sm text-center h-100 border-bottom border-4 border-success hover-lift">
+                        <small class="text-muted text-uppercase d-block mb-1"
+                            style="font-size: 0.75rem;">Phosphorus</small>
+                        <h4 class="mb-0 fw-bold text-success">{{ soil_data.phosphorus }} <span
+                                class="fs-6 text-muted">ppm</span></h4>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2"> <!-- Potassium -->
+                    <div
+                        class="p-3 bg-white rounded-3 shadow-sm text-center h-100 border-bottom border-4 border-warning hover-lift">
+                        <small class="text-muted text-uppercase d-block mb-1"
+                            style="font-size: 0.75rem;">Potassium</small>
+                        <h4 class="mb-0 fw-bold text-warning">{{ soil_data.potassium }} <span
+                                class="fs-6 text-muted">ppm</span></h4>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2"> <!-- Moisture -->
+                    <div
+                        class="p-3 bg-white rounded-3 shadow-sm text-center h-100 border-bottom border-4 border-info hover-lift">
+                        <small class="text-muted text-uppercase d-block mb-1"
+                            style="font-size: 0.75rem;">Moisture</small>
+                        <h4 class="mb-0 fw-bold text-info">{{ soil_data.moisture }}<span
+                                class="fs-6 text-muted">%</span></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <!-- Fertilizer Recommendations -->
+        <div class="col-lg-12">
+            {% if fertilizer_recommendations %}
+            <div class="glass-card p-4 p-md-5 mb-5 fade-in" style="animation-delay: 100ms;">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3 text-primary shadow-sm icon-pulse">
+                        <i class="fas fa-boxes fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold text-dark m-0">Fertilizer Advisory</h3>
+                        <p class="text-secondary mb-0 small">Optimized nutrient dosage for your crops based on soil
+                            deficiency.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    {% for rec in fertilizer_recommendations %}
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-lg h-100 overflow-hidden hover-lift-card">
+                            <div
+                                class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center position-relative">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-success bg-opacity-10 text-success me-3">
+                                        <i class="fas fa-seedling"></i>
+                                    </div>
+                                    <h4 class="fw-bold text-dark m-0">{{ rec.crop_name }}</h4>
+                                </div>
+                                <span
+                                    class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">Target
+                                    Crop</span>
+                                <div
+                                    class="position-absolute bottom-0 start-0 w-100 h-1 bg-gradient-primary opacity-50">
+                                </div>
+                            </div>
+                            <div class="card-body bg-light bg-opacity-25 px-4 pt-4 pb-4">
+                                <div class="mt-2 mb-4">
+                                    <h6 class="fw-bold text-primary small text-uppercase mb-3 ls-1"><i
+                                            class="fas fa-vial me-2"></i>Recommended Fertilizers</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        {% for fertilizer in rec.fertilizer_suggestions %}
+                                        <li class="mb-2 d-flex align-items-start fade-in-item">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            <span class="text-dark fw-medium">{{ fertilizer }}</span>
+                                        </li>
+                                        {% empty %}
+                                        <li class="text-muted fst-italic small">No specific fertilizer names, please
+                                            check nutrients.</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="row g-2 mb-3 mt-2">
+                                    <div class="col-4">
+                                        <div class="p-2 bg-white rounded-3 text-center border shadow-xs transition-all">
+                                            <div class="fw-bold text-primary">{{ rec.nitrogen_recommended }}</div>
+                                            <small class="text-muted" style="font-size: 0.7rem;">N (kg/acre)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="p-2 bg-white rounded-3 text-center border shadow-xs transition-all">
+                                            <div class="fw-bold text-success">{{ rec.phosphorus_recommended }}</div>
+                                            <small class="text-muted" style="font-size: 0.7rem;">P (kg/acre)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="p-2 bg-white rounded-3 text-center border shadow-xs transition-all">
+                                            <div class="fw-bold text-warning">{{ rec.potassium_recommended }}</div>
+                                            <small class="text-muted" style="font-size: 0.7rem;">K (kg/acre)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="alert alert-warning bg-warning bg-opacity-10 border-0 mb-0 d-flex rounded-3 align-items-center">
+                                    <i class="fas fa-lightbulb text-warning fs-5 me-3"></i>
+                                    <small class="text-dark opacity-75 lh-sm">{{ rec.notes|truncatechars:120 }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Crop Recommendations -->
+        <div class="col-lg-12">
+            {% if crop_recommendations %}
+            <div class="glass-card p-4 p-md-5 mb-5 fade-in position-relative overflow-hidden"
+                style="animation-delay: 200ms; border-top: 5px solid #2E7D32;">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3 text-success shadow-sm icon-pulse">
+                        <i class="fas fa-wheat fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold text-dark m-0">Top Crop Choices</h3>
+                        <p class="text-secondary mb-0 small">AI-ranked crops suitable for your specific soil conditions
+                            and season.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    {% for rec in crop_recommendations %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-lg h-100 hover-lift-card bg-white rounded-4 overflow-hidden">
+                            <div class="position-relative h-100 p-4 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h4 class="fw-bold text-dark mb-0">{{ rec.crop.name }}</h4>
+                                    <span
+                                        class="badge rounded-pill px-3 py-2 fw-bold {% if rec.score >= 8 %}bg-success{% elif rec.score >= 5 %}bg-warning{% else %}bg-danger{% endif %} text-white shadow-sm">
+                                        {{ rec.score }}0% Match
+                                    </span>
+                                </div>
+
+                                <span
+                                    class="badge bg-light text-secondary border align-self-start mb-3 rounded-pill px-3">
+                                    <i
+                                        class="fas fa-sun me-1 {% if rec.crop.season == 'kharif' %}text-warning{% else %}text-info{% endif %}"></i>
+                                    {{ rec.crop.season|title }} Season
+                                </span>
+
+                                <p class="small text-secondary mb-4 flex-grow-1 lh-sm">{{ rec.reason|truncatewords:20 }}
+                                </p>
+
+                                <div class="mt-auto pt-3 border-top">
+                                    <div class="d-flex justify-content-between align-items-center small">
+                                        <span class="text-muted"><i class="fas fa-chart-line me-1 text-primary"></i>Suitability</span>
+                                        <span class="fw-bold {% if rec.score >= 8 %}text-success{% elif rec.score >= 5 %}text-warning{% else %}text-danger{% endif %}">{{ rec.suitability }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="text-center pb-5">
+        <a href="{% url 'soil:report' soil_data.pk %}"
+            class="btn btn-custom btn-lg shadow-lg rounded-pill px-5 py-3 hover-scale me-3 mb-3">
+            <i class="fas fa-file-pdf me-2"></i>Download Full Report
+        </a>
+        <a href="{% url 'soil:create' %}?land={{ land.id }}"
+            class="btn btn-outline-success btn-lg rounded-pill px-5 py-3 hover-scale mb-3">
+            <i class="fas fa-plus me-2"></i>New Analysis
+        </a>
+        <br>
+        <a href="{% url 'recommendations:home' %}"
+            class="text-muted text-decoration-none small hover-underline mt-3 d-inline-block">
+            <i class="fas fa-arrow-left me-1"></i> Back to Recommendations
+        </a>
+    </div>
+
+</div>
+
+<style>
+    .backdrop-blur {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .hover-lift {
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .hover-lift-card {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .hover-lift-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .hover-scale {
+        transition: transform 0.2s ease;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.03);
+    }
+
+    .hover-underline:hover {
+        text-decoration: underline !important;
+        color: var(--primary-color) !important;
+    }
+
+    .icon-pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4);
+        }
+
+        70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(46, 125, 50, 0);
+        }
+
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(46, 125, 50, 0);
+        }
+    }
+
+    .icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .ls-1 {
+        letter-spacing: 1px;
+    }
+
+    .fade-in-item {
+        animation: fadeIn 0.5s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-in-item:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .fade-in-item:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .fade-in-item:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+</style>
+<script>
+    console.log("Template Loaded: V4 Enhanced");
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Fertilizer Recommendations{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Fertilizer Recommendations</h3>
+    </div>
+    <div class="card-body">
+        {% if object_list %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Land</th>
+                        <th>Crop</th>
+                        <th>Date</th>
+                        <th>N</th>
+                        <th>P</th>
+                        <th>K</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rec in object_list %}
+                        <tr>
+                            <td>{{ rec.land.name }}</td>
+                            <td>{{ rec.crop.name }}</td>
+                            <td>{{ rec.date_recommended }}</td>
+                            <td>{{ rec.nitrogen_recommended }}</td>
+                            <td>{{ rec.phosphorus_recommended }}</td>
+                            <td>{{ rec.potassium_recommended }}</td>
+                            <td>{{ rec.notes }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No recommendations available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

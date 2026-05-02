@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold text-success mb-1">Product Inventory</h2>
+            <p class="text-muted">Manage your agricultural supplies and equipment</p>
+        </div>
+        {% if user.role == 'admin' or user.role == 'agronomist' or user.role == 'farmer' %}
+        <a href="{% url 'inventory:create' %}" class="btn btn-custom shadow-sm">
+            <i class="fas fa-plus me-2"></i>Add Product
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        {% if products %}
+        {% for product in products %}
+        <div class="col-md-4 col-lg-3">
+            <div class="glass-card product-card h-100 fade-in"
+                style="animation-delay: {{ forloop.counter0|add:1|get_digit:1 }}00ms;">
+                <div class="position-relative">
+                    <img src="{{ product.display_image }}" class="card-img-top img-cover rounded-top-4"
+                        alt="{{ product.name }}" style="height: 200px;">
+
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-white text-success shadow-sm px-3 py-2 rounded-pill">
+                            {% if product.product_type == 'seed' %}
+                            <i class="fas fa-seedling me-1"></i>
+                            {% elif product.product_type == 'fertilizer' %}
+                            <i class="fas fa-flask me-1"></i>
+                            {% elif product.product_type == 'pesticide' %}
+                            <i class="fas fa-spray-can me-1"></i>
+                            {% elif product.product_type == 'equipment' %}
+                            <i class="fas fa-tractor me-1"></i>
+                            {% elif product.product_type == 'fuel' %}
+                            <i class="fas fa-gas-pump me-1"></i>
+                            {% endif %}
+                            {{ product.get_product_type_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 d-flex flex-column">
+                    <h5 class="card-title fw-bold mb-2">{{ product.name }}</h5>
+                    <p class="text-secondary small mb-3 flex-grow-1">{{ product.description|truncatechars:80 }}</p>
+
+                    <div
+                        class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3 bg-opacity-50">
+                        <div>
+                            <small class="text-muted d-block text-uppercase ls-1"
+                                style="font-size: 0.7rem;">Price</small>
+                            <span class="fw-bold text-dark">₹{{ product.price }}</span>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted d-block text-uppercase ls-1"
+                                style="font-size: 0.7rem;">Stock</small>
+                            <span
+                                class="fw-bold {% if product.is_low_stock %}text-danger{% else %}text-success{% endif %}">
+                                {{ product.stock_quantity }} {{ product.unit }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'inventory:detail' product.id %}"
+                        class="btn btn-outline-success w-100 rounded-pill">
+                        View Details <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12 text-center py-5 glass-card">
+            <div class="mb-3 opacity-50">
+                <i class="fas fa-box-open fa-4x text-muted"></i>
+            </div>
+            <h5 class="mt-3 text-secondary">No Products Available</h5>
+            <p class="text-muted">Inventory is currently empty.</p>
+            {% if user.role == 'admin' or user.role == 'agronomist' %}
+            <a href="{% url 'inventory:create' %}" class="btn btn-custom mt-3">
+                Add First Product
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .img-cover {
+        object-fit: cover;
+        width: 100%;
+    }
+</style>
+{% endblock %}

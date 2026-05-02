@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Profile - Smart Agriculture{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <div class="glass-card border-0 rounded-4 overflow-hidden shadow-lg fade-in">
+                <!-- Header Banner -->
+                <div class="profile-header py-5 position-relative">
+                    <div
+                        class="position-relative z-1 text-center text-md-start px-4 px-md-5 d-flex flex-column flex-md-row align-items-center">
+                        <div class="avatar-container mb-3 mb-md-0 me-md-4">
+                            <div class="avatar-circle shadow-lg display-4 fw-bold">
+                                {{ user.username|first|upper }}
+                            </div>
+                            <div class="role-badge shadow-sm">
+                                <i class="fas fa-crown me-1 text-warning"></i> {{ user.role|title }}
+                            </div>
+                        </div>
+                        <div class="text-white">
+                            <h2 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h2>
+                            <p class="mb-2 opacity-75"><i class="fas fa-envelope me-2"></i>{{ user.email }}</p>
+                            <span
+                                class="badge bg-white text-success bg-opacity-25 backdrop-blur border border-white border-opacity-25 rounded-pill px-3 py-2">
+                                <i class="fas fa-circle me-1 text-warning small"></i> Active Account
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- decorative background -->
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-farm opacity-90"></div>
+                    <i class="fas fa-leaf position-absolute text-white"
+                        style="bottom: -20px; right: 40px; font-size: 12rem; opacity: 0.1; transform: rotate(-20deg);"></i>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-light bg-opacity-10">
+                    <div class="row g-5">
+                        <!-- Sidebar / Info -->
+                        <div class="col-lg-4 order-2 order-lg-1">
+                            <div class="glass-card p-4 rounded-4 h-100 bg-white border-0 shadow-sm">
+                                <h5 class="fw-bold text-success mb-4 border-bottom pb-2">
+                                    <i class="fas fa-shield-alt me-2"></i>Account Status
+                                </h5>
+
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3 text-success">
+                                        <i class="fas fa-user-clock fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-uppercase text-muted ls-1 small">Member Since</small>
+                                        <h6 class="fw-bold mb-0 text-dark">{{ user.date_joined|date:"F Y" }}</h6>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3 text-primary">
+                                        <i class="fas fa-id-badge fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-uppercase text-muted ls-1 small">Username</small>
+                                        <h6 class="fw-bold mb-0 text-dark">@{{ user.username }}</h6>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info border-0 rounded-3 small">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    To change your role or significantly alter account details, please contact support.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form -->
+                        <div class="col-lg-8 order-1 order-lg-2">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-success text-white p-2 rounded-3 me-3 shadow-sm icon-box">
+                                    <i class="fas fa-user-edit"></i>
+                                </div>
+                                <h4 class="fw-bold text-dark m-0">Edit Personal Details</h4>
+                            </div>
+
+                            <form method="post" novalidate class="needs-validation">
+                                {% csrf_token %}
+
+                                {% if form.non_field_errors %}
+                                <div class="alert alert-danger border-0 shadow-sm mb-4" role="alert">
+                                    {% for error in form.non_field_errors %}
+                                    <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                <div class="row g-3">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.username.id_for_label }}"
+                                            class="form-label fw-bold text-secondary small text-uppercase">
+                                            Username
+                                        </label>
+                                        <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                            <span class="input-group-text bg-white border-0 text-success"><i
+                                                    class="fas fa-at"></i></span>
+                                            {{ form.username }}
+                                        </div>
+                                        {% if form.username.errors %}
+                                        <div class="text-danger small mt-1 ps-1">{{ form.username.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.email.id_for_label }}"
+                                            class="form-label fw-bold text-secondary small text-uppercase">
+                                            Email Address
+                                        </label>
+                                        <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                            <span class="input-group-text bg-white border-0 text-success"><i
+                                                    class="fas fa-envelope"></i></span>
+                                            {{ form.email }}
+                                        </div>
+                                        {% if form.email.errors %}
+                                        <div class="text-danger small mt-1 ps-1">{{ form.email.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.first_name.id_for_label }}"
+                                            class="form-label fw-bold text-secondary small text-uppercase">
+                                            First Name
+                                        </label>
+                                        <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                            <span class="input-group-text bg-white border-0 text-success"><i
+                                                    class="fas fa-user"></i></span>
+                                            {{ form.first_name }}
+                                        </div>
+                                        {% if form.first_name.errors %}
+                                        <div class="text-danger small mt-1 ps-1">{{ form.first_name.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.last_name.id_for_label }}"
+                                            class="form-label fw-bold text-secondary small text-uppercase">
+                                            Last Name
+                                        </label>
+                                        <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                            <span class="input-group-text bg-white border-0 text-success"><i
+                                                    class="fas fa-user"></i></span>
+                                            {{ form.last_name }}
+                                        </div>
+                                        {% if form.last_name.errors %}
+                                        <div class="text-danger small mt-1 ps-1">{{ form.last_name.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-12 mb-4">
+                                        <label for="{{ form.role.id_for_label }}"
+                                            class="form-label fw-bold text-secondary small text-uppercase">
+                                            Role
+                                        </label>
+                                        <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                            <span class="input-group-text bg-white border-0 text-success"><i
+                                                    class="fas fa-user-tag"></i></span>
+                                            {{ form.role }}
+                                        </div>
+                                        {% if form.role.errors %}
+                                        <div class="text-danger small mt-1 ps-1">{{ form.role.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end mt-2">
+                                    <button type="submit"
+                                        class="btn btn-custom btn-lg px-5 shadow-lg rounded-pill hover-lift">
+                                        <i class="fas fa-save me-2"></i> Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-farm {
+        background: linear-gradient(135deg, #2E7D32 0%, #11998e 100%);
+    }
+
+    .avatar-container {
+        position: relative;
+    }
+
+    .avatar-circle {
+        width: 120px;
+        height: 120px;
+        background: white;
+        color: #2E7D32;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid rgba(255, 255, 255, 0.4);
+        background-clip: padding-box;
+    }
+
+    .role-badge {
+        position: absolute;
+        bottom: 0;
+        right: -10px;
+        background: white;
+        color: #333;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+
+    .form-control,
+    .form-select {
+        border: none !important;
+        background-color: white !important;
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        box-shadow: none !important;
+        background-color: #f8f9fa !important;
+    }
+
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25) !important;
+        border: 1px solid #2E7D32 !important;
+    }
+
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .backdrop-blur {
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-3px);
+    }
+</style>
+
+<script>
+    // Add form-control styling to rendered Django form fields
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (!input.classList.contains('form-control') && !input.classList.contains('form-select')) {
+                input.classList.add('form-control');
+                input.style.border = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

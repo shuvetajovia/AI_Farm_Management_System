@@ -1,0 +1,147 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Farmer Details{% endblock %}
+{% block header %}Farmer Profile{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Profile Card -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-5">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                    style="width: 100px; height: 100px;">
+                    <span class="display-5 fw-bold">{{ farmer.user.username|make_list|first|upper }}</span>
+                </div>
+                <h3 class="fw-bold mb-1">{{ farmer.user.username }}</h3>
+                <p class="text-muted mb-3">{{ farmer.user.email }}</p>
+
+                {% if farmer.is_deleted %}
+                <span class="badge bg-danger rounded-pill px-3 py-2">Account Deactivated</span>
+                {% else %}
+                <span class="badge badge-soft-success rounded-pill px-3 py-2">Active Farmer</span>
+                {% endif %}
+
+                <hr class="my-4 opactiy-25">
+
+                <div class="text-start">
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase fw-bold">Phone</label>
+                        <div class="fw-medium">{{ farmer.phone|default:"-" }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase fw-bold">Farm Size</label>
+                        <div class="fw-medium">{{ farmer.farm_size }} Acres</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase fw-bold">Address</label>
+                        <div class="fw-medium">{{ farmer.address|default:"-" }}</div>
+                    </div>
+                    <div>
+                        <label class="small text-muted text-uppercase fw-bold">Joined</label>
+                        <div class="fw-medium">{{ farmer.user.date_joined|date:"M d, Y" }}</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top">
+                    {% if farmer.is_deleted %}
+                    <form method="POST" action="{% url 'custom_admin:farmer_restore' farmer.pk %}" class="d-grid">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-success">Restore Account</button>
+                    </form>
+                    {% else %}
+                    <form method="POST" action="{% url 'custom_admin:farmer_delete' farmer.pk %}" class="d-grid"
+                        onsubmit="return confirm('Deactivate this farmer account?');">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-danger">Deactivate Account</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lands & Orders -->
+    <div class="col-md-8">
+        <!-- Lands -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div
+                class="card-header bg-transparent py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="m-0 fw-bold">Registered Lands</h5>
+                <span class="badge bg-primary rounded-pill">{{ lands.count }}</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light bg-opacity-50">
+                            <tr>
+                                <th class="ps-4">Name</th>
+                                <th>Area</th>
+                                <th>Soil</th>
+                                <th>Location</th>
+                                <th class="pe-4 text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for land in lands %}
+                            <tr>
+                                <td class="ps-4 fw-bold">{{ land.name }}</td>
+                                <td>{{ land.area }} ac</td>
+                                <td>{{ land.soil_type }}</td>
+                                <td>{{ land.location }}</td>
+                                <td class="pe-4 text-end"><span class="badge badge-soft-success">Active</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">No lands registered.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="card border-0 shadow-sm">
+            <div
+                class="card-header bg-transparent py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="m-0 fw-bold">Order History</h5>
+                <span class="badge bg-warning text-dark rounded-pill">{{ orders.count }}</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light bg-opacity-50">
+                            <tr>
+                                <th class="ps-4">Order ID</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th class="pe-4 text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td class="ps-4 fw-bold">#{{ order.id }}</td>
+                                <td>{{ order.order_date|date:"M d, Y" }}</td>
+                                <td>₹{{ order.total_amount }}</td>
+                                <td class="pe-4 text-end">
+                                    <span
+                                        class="badge {% if order.status == 'delivered' %}bg-success{% elif order.status == 'pending' %}bg-warning text-dark{% else %}bg-secondary{% endif %} rounded-pill text-uppercase">{{
+                                        order.status }}</span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">No orders found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

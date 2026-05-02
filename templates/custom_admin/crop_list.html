@@ -1,0 +1,66 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Crops{% endblock %}
+{% block header %}Crop Management{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card-header bg-transparent py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="m-0 fw-bold text-primary">All Crops</h5>
+        <a href="{% url 'custom_admin:crop_create' %}" class="btn btn-premium btn-sm shadow-sm">
+            <i class="fas fa-plus me-2"></i>Add Crop
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light bg-opacity-50">
+                    <tr>
+                        <th class="ps-4 py-3">Name</th>
+                        <th class="py-3">Season</th>
+                        <th class="py-3">Requirements</th>
+                        <th class="pe-4 py-3 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for crop in object_list %}
+                    <tr class="{% if crop.is_deleted %}table-danger bg-danger bg-opacity-10{% endif %}">
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">{{ crop.name }}</div>
+                            {% if crop.is_deleted %}<span class="badge bg-danger rounded-pill">Deleted</span>{% endif %}
+                        </td>
+                        <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">{{ crop.get_season_display }}</span></td>
+                        <td>
+                            <div class="small text-muted mb-1">
+                                <span class="me-2" title="Nitrogen">N: <strong>{{ crop.nitrogen_requirement }}</strong></span>
+                                <span class="me-2" title="Phosphorus">P: <strong>{{ crop.phosphorus_requirement }}</strong></span>
+                                <span title="Potassium">K: <strong>{{ crop.potassium_requirement }}</strong></span>
+                            </div>
+                            <small class="text-secondary"><i class="fas fa-flask me-1 text-muted"></i> pH: {{ crop.optimal_ph_min }}-{{ crop.optimal_ph_max }}</small>
+                        </td>
+                        <td class="pe-4 text-end">
+                            {% if not crop.is_deleted %}
+                            <form method="POST" action="{% url 'custom_admin:crop_delete' crop.pk %}" class="d-inline"
+                                onsubmit="return confirm('Delete this crop?');">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-light text-danger hover-lift" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="fas fa-seedling fs-1 mb-3 opacity-25"></i>
+                            <p>No crops found in the database.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

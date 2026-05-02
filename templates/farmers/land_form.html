@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% if form.instance.pk %}Edit Land{% else %}Add Land{% endif %} - SmartAgri{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-success text-white rounded-top-4 py-3 px-4">
+          <h4 class="mb-0">
+            <i class="fas fa-map-marked-alt me-2"></i>
+            {% if form.instance.pk %}Edit Land Parcel{% else %}Add New Land Parcel{% endif %}
+          </h4>
+          <p class="mb-0 opacity-75 small">Enter your agricultural land details</p>
+        </div>
+        <div class="card-body p-4">
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-secondary small text-uppercase">
+                {{ field.label }}
+              </label>
+              {{ field }}
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+              {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors.0 }}</div>{% endif %}
+            </div>
+            {% endfor %}
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-success btn-lg rounded-3">
+                <i class="fas fa-save me-2"></i>Save Land Parcel
+              </button>
+              <a href="{% url 'farmers:land_list' %}" class="btn btn-outline-secondary rounded-3">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('input,select,textarea').forEach(el => {
+  if (!el.classList.contains('form-control') && !el.classList.contains('form-select')) {
+    el.classList.add(el.tagName === 'SELECT' ? 'form-select' : 'form-control');
+  }
+});
+</script>
+{% endblock %}

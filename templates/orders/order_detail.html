@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Order {{ object.id }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Order #{{ object.id }}</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>Date:</strong> {{ object.order_date }}</p>
+        <p><strong>Status:</strong> {{ object.get_status_display }}</p>
+        <p><strong>Total:</strong> ₹{{ object.total_amount }}</p>
+        <h4>Items:</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>₹{{ item.total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-flex gap-2">
+            <a href="{% url 'orders:list' %}" class="btn btn-secondary">Back to Orders</a>
+            <a href="{% url 'orders:resend_notifications' object.pk %}" class="btn btn-primary"><i
+                    class="fas fa-envelope me-2"></i>Resend Confirmation</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>My Orders</h3>
+        <a href="{% url 'orders:create' %}" class="btn btn-primary">Place New Order</a>
+    </div>
+    <div class="card-body">
+        {% if object_list %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in object_list %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.order_date }}</td>
+                    <td>{{ order.get_status_display }}</td>
+                    <td>₹{{ order.total_amount }}</td>
+                    <td>
+                        <a href="{% url 'orders:detail' order.pk %}" class="btn btn-sm btn-info text-white"><i
+                                class="fas fa-eye"></i> View</a>
+                        <a href="{% url 'orders:resend_notifications' order.pk %}" class="btn btn-sm btn-primary"
+                            title="Resend Email & SMS"><i class="fas fa-envelope"></i> Resend</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No orders yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

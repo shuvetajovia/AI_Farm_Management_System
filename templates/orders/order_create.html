@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Place Order{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4 text-center">Place New Order</h2>
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ product.display_image }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted">{{ product.description|truncatechars:100 }}</p>
+                    <p class="card-text">
+                        <strong>Type:</strong> {{ product.get_product_type_display }}<br>
+                        <strong>Price:</strong> ₹{{ product.price }} per {{ product.unit }}<br>
+                        <strong>Stock:</strong> {{ product.stock_quantity }} {{ product.unit }}
+                    </p>
+                    <div class="mt-auto">
+                        <form method="post" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="product" value="{{ product.id }}">
+                            <div class="mb-2">
+                                <label for="quantity_{{ product.id }}" class="form-label">Quantity ({{ product.unit }})</label>
+                                <input type="number" class="form-control" id="quantity_{{ product.id }}" name="quantity" min="1" max="{{ product.stock_quantity }}" value="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100"
+                                    {% if product.stock_quantity == 0 %}disabled{% endif %}>
+                                {% if product.stock_quantity == 0 %}
+                                    Out of Stock
+                                {% else %}
+                                    Order Now
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not products %}
+    <div class="text-center py-5">
+        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+        <h4>No Products Available</h4>
+        <p class="text-muted">There are currently no products in inventory.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'custom_admin/base.html' %}
+{% load static %}
+
+{% block header %}Manage User Role{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-5">
+                <div class="mb-4 text-center">
+                    <div class="display-6 fw-bold mb-1">{{ object.username }}</div>
+                    <div class="text-muted small">Current Role: <span class="badge bg-primary">{{ object.role }}</span>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-secondary">New Role</label>
+                        {{ form.role }}
+                        {% if form.role.errors %}
+                        <div class="text-danger small mt-1">{{ form.role.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary fw-bold py-2 shadow-sm">
+                            <i class="fas fa-save me-2"></i>Update Role
+                        </button>
+                        <a href="{% url 'custom_admin:farmer_list' %}" class="btn btn-light text-muted">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

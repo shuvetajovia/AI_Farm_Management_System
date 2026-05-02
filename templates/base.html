@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Agriculture Management{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {% block extra_head %}{% endblock %}
+    <style>
+:root {
+  --primary: #1a7a3c;
+  --primary-light: #2ea852;
+  --primary-dark: #0f5c2a;
+  --accent: #f0a500;
+  --surface: #ffffff;
+  --surface-alt: #f4f9f5;
+  --border: #e0ede4;
+  --text: #1a2e1f;
+  --text-muted: #5a7a62;
+  --shadow-sm: 0 2px 8px rgba(26,122,60,0.08);
+  --shadow-md: 0 4px 20px rgba(26,122,60,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+/* Navbar enhancement */
+.navbar {
+  background: linear-gradient(135deg, #0f5c2a 0%, #1a7a3c 60%, #2ea852 100%) !important;
+  box-shadow: 0 2px 15px rgba(15,92,42,0.3);
+}
+
+.navbar .nav-link, .navbar-brand {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+.navbar .nav-link:hover {
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* Global card style */
+.glass-card {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Form inputs */
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(46,168,82,0.25);
+}
+
+/* Buttons */
+.btn-success {
+  background: linear-gradient(135deg, #1a7a3c, #2ea852);
+  border: none;
+  transition: all 0.2s ease;
+}
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(26,122,60,0.35);
+}
+
+/* Page background */
+body {
+  background-color: #f0f7f2;
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success custom-navbar sticky-top py-2">
+        <div class="container">
+
+            <!-- BRAND -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'dashboard:home' %}">
+                <i class="fas fa-leaf text-success"></i>
+                <span>SmartAgri</span>
+            </a>
+
+            <!-- TOGGLER -->
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent">
+                <i class="fas fa-bars fs-2"></i>
+            </button>
+
+            <!-- MENU -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto align-items-center gap-1 gap-lg-3">
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.view_name == 'farmers:profile' %}active{% endif %}"
+                            href="{% url 'farmers:profile' %}">
+                            <i class="fas fa-tractor me-1 small"></i> My Farm
+                        </a>
+                    </li>
+
+                    <!-- TOOLS DROPDOWN -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-tools me-1 small"></i> Smart Tools
+                        </a>
+                        <ul class="dropdown-menu border-0 shadow-lg rounded-4 p-2 mt-2">
+                            <li><a class="dropdown-item rounded-3" href="{% url 'recommendations:home' %}"><i
+                                        class="fas fa-magic me-2 text-primary"></i>Recommendations</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'soil:list' %}"><i
+                                        class="fas fa-flask me-2 text-info"></i>Soil Data</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'crops:list' %}"><i
+                                        class="fas fa-wheat me-2 text-warning"></i>Crop Info</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'farmers:gov_help' %}"><i
+                                        class="fas fa-landmark me-2 text-success"></i>Gov Services</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- SHOP DROPDOWN -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-store me-1 small"></i> Marketplace
+                        </a>
+                        <ul class="dropdown-menu border-0 shadow-lg rounded-4 p-2 mt-2">
+                            <li><a class="dropdown-item rounded-3" href="{% url 'inventory:list' %}"><i
+                                        class="fas fa-shopping-bag me-2 text-danger"></i>Buy Inputs</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'orders:list' %}"><i
+                                        class="fas fa-clipboard-list me-2 text-secondary"></i>My Orders</a></li>
+                        </ul>
+                    </li>
+
+                    {% if user.role == 'admin' or user.role == 'agronomist' or user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-primary" href="{% url 'custom_admin:dashboard' %}">
+                            <i class="fas fa-shield-alt me-1"></i> Admin Panel
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% endif %}
+                </ul>
+
+                <!-- USER MENU -->
+                <ul class="navbar-nav align-items-center">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle user-chip d-flex align-items-center gap-2" href="#"
+                            role="button" data-bs-toggle="dropdown">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                                style="width: 28px; height: 28px; font-size: 0.75rem;">
+                                {{ user.username|make_list|first|upper }}
+                            </div>
+                            <span>{{ user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 p-2 mt-2">
+                            <li><a class="dropdown-item rounded-3" href="{% url 'accounts:profile' %}">Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item rounded-3 text-danger"
+                                    href="{% url 'accounts:logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item me-2">
+                        <a class="btn btn-sm btn-link text-decoration-none fw-bold text-dark"
+                            href="{% url 'accounts:login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-sm btn-custom shadow-sm" href="{% url 'accounts:register' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="{% block main_class %}container py-4{% endblock %}">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center fade show"
+            role="alert">
+            <i class="fas fa-info-circle me-3 fs-5"></i>
+            <div>{{ message }}</div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

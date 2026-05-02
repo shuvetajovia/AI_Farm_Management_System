@@ -1,0 +1,201 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block header %}Overview{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-5">
+    <!-- Stat Cards -->
+    <div class="col-md-3">
+        <div class="glass-card p-4 border-0 hover-lift h-100 position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 p-3" style="opacity: 0.1;">
+                <i class="fas fa-users fa-4x text-success"></i>
+            </div>
+            <div class="position-relative z-1">
+                <h6 class="text-secondary text-uppercase small fw-bold mb-2 ls-1">Farmers</h6>
+                <h2 class="display-5 fw-bold text-dark mb-1">{{ total_farmers }}</h2>
+                <div class="text-success small fw-semibold">
+                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 me-1">
+                        <i class="fas fa-arrow-up me-1"></i>Active
+                    </span>
+                    Profiles
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 border-0 hover-lift h-100 position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 p-3" style="opacity: 0.1;">
+                <i class="fas fa-map-marked-alt fa-4x text-primary"></i>
+            </div>
+            <div class="position-relative z-1">
+                <h6 class="text-secondary text-uppercase small fw-bold mb-2 ls-1">Active Lands</h6>
+                <h2 class="display-5 fw-bold text-dark mb-1">{{ active_lands }}</h2>
+                <div class="text-primary small fw-semibold">
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 py-1 me-1">
+                        <i class="fas fa-check me-1"></i>Verified
+                    </span>
+                    Plots
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 border-0 hover-lift h-100 position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 p-3" style="opacity: 0.1;">
+                <i class="fas fa-shopping-basket fa-4x text-warning"></i>
+            </div>
+            <div class="position-relative z-1">
+                <h6 class="text-secondary text-uppercase small fw-bold mb-2 ls-1">Total Orders</h6>
+                <h2 class="display-5 fw-bold text-dark mb-1">{{ total_orders }}</h2>
+                <div class="text-warning small fw-semibold">
+                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1 me-1">
+                        <i class="fas fa-clock me-1"></i>Season
+                    </span>
+                    Active
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 border-0 hover-lift h-100 position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 p-3" style="opacity: 0.1;">
+                <i class="fas fa-wallet fa-4x text-info"></i>
+            </div>
+            <div class="position-relative z-1">
+                <h6 class="text-secondary text-uppercase small fw-bold mb-2 ls-1">Revenue</h6>
+                <h2 class="display-5 fw-bold text-dark mb-1">₹{{ total_revenue }}</h2>
+                <div class="text-info small fw-semibold">
+                    <span class="badge bg-info bg-opacity-10 text-info rounded-pill px-2 py-1 me-1">
+                        <i class="fas fa-chart-line me-1"></i>Sales
+                    </span>
+                    Total
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="glass-card h-100 border-0">
+            <div
+                class="card-header bg-transparent py-3 px-4 d-flex justify-content-between align-items-center border-bottom border-light">
+                <h5 class="m-0 fw-bold text-dark">Quick Actions</h5>
+                <span class="badge bg-light text-muted border">System Controls</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="{% url 'custom_admin:crop_create' %}"
+                            class="card bg-success bg-opacity-10 border-0 text-decoration-none h-100 hover-scale text-center p-4">
+                            <div class="stat-icon mb-3" style="background: linear-gradient(135deg,#fff3cd,#ffe082); color:#f57f17; width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin: 0 auto;">
+  <i class="fas fa-seedling"></i>
+</div>
+                            <h6 class="fw-bold text-dark m-0">Add Crop</h6>
+                            <small class="text-muted d-block mt-1">Update catalog</small>
+                        </a>
+                    </div>
+                    {% if user.is_superuser %}
+                    <div class="col-md-4">
+                        <a href="{% url 'custom_admin:export_data' 'farmers' %}"
+                            class="card bg-primary bg-opacity-10 border-0 text-decoration-none h-100 hover-scale text-center p-4">
+                            <div class="mb-3 text-primary"><i class="fas fa-file-csv fa-2x"></i></div>
+                            <h6 class="fw-bold text-dark m-0">Export Farmers</h6>
+                            <small class="text-muted d-block mt-1">Download CSV</small>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'custom_admin:export_data' 'orders' %}"
+                            class="card bg-warning bg-opacity-10 border-0 text-decoration-none h-100 hover-scale text-center p-4">
+                            <div class="mb-3 text-warning"><i class="fas fa-file-invoice-dollar fa-2x"></i></div>
+                            <h6 class="fw-bold text-dark m-0">Export Orders</h6>
+                            <small class="text-muted d-block mt-1">Download CSV</small>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="mt-4 p-4 rounded-3 bg-dark text-white position-relative overflow-hidden">
+                    <div
+                        class="position-relative z-1 d-flex align-items-center justify-content-between flex-wrap gap-3">
+                        <div>
+                            <h6 class="text-uppercase text-white-50 small fw-bold mb-1">System Health</h6>
+                            <div class="d-flex align-items-center gap-3">
+                                <span
+                                    class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"><span style="display:inline-block;width:10px;height:10px;background:#22c55e;border-radius:50%;margin-right:6px;animation:pulse 1.5s infinite;"></span><i
+                                        class="fas fa-database me-1"></i> DB: Connected</span>
+
+<style>
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.6;transform:scale(1.3)}
+}
+</style>
+                                <span
+                                    class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"><i
+                                        class="fas fa-bolt me-1"></i> Cache: Active</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-white-50 d-block">Soil Lab Status</small>
+                            <span class="badge bg-warning text-dark"><i class="fas fa-tools me-1"></i>
+                                Maintenance</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-server position-absolute text-white"
+                        style="bottom: -20px; right: 20px; font-size: 6rem; opacity: 0.05;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-card h-100 border-0">
+            <div class="card-header bg-transparent py-3 px-4 border-bottom border-light">
+                <h5 class="m-0 fw-bold text-dark">Recent Activity</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush bg-transparent">
+                    {% for log in recent_logs %}
+                    <div class="list-group-item bg-transparent border-light px-4 py-3">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="mt-1">
+                                {% if log.action == 'CREATE' %}
+                                <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;"><i class="fas fa-plus small"></i></div>
+                                {% elif log.action == 'DELETE' %}
+                                <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;"><i class="fas fa-trash small"></i></div>
+                                {% elif log.action == 'UPDATE' %}
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;"><i class="fas fa-pen small"></i></div>
+                                {% else %}
+                                <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;"><i class="fas fa-info small"></i></div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold text-dark small">{{ log.model_name }}</span>
+                                    <small class="text-muted" style="font-size: 0.7rem;">{{ log.timestamp|timesince }}
+                                        ago</small>
+                                </div>
+                                <p class="mb-1 small text-secondary lh-sm">{{ log.details|default:log.object_repr|truncatechars:50 }}</p>
+                                <small class="text-muted text-uppercase"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">by {{ log.admin_user.username }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-5 text-center text-muted">
+                        <i class="fas fa-history fs-1 mb-3 opacity-25"></i>
+                        <p class="m-0 small">No recent activity found.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

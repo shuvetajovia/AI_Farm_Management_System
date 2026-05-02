@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Government Portal - SmartAgri{% endblock %}
+{% block content %}
+<div class="container py-5">
+
+  <!-- Header -->
+  <div class="text-center mb-5">
+    <div class="mb-3"><i class="fas fa-landmark fa-3x text-success"></i></div>
+    <h2 class="fw-bold text-success">Government Portal</h2>
+    <p class="text-muted">Your verified gateway to official agricultural schemes, insurance, and emergency support.</p>
+    <span class="badge bg-success px-3 py-2"><i class="fas fa-check-circle me-1"></i>Official Sources</span>
+  </div>
+
+  <!-- Search -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+      <input type="text" id="searchInput" class="form-control form-control-lg rounded-pill border-success"
+             placeholder="🔍 Search resources..." oninput="filterResources()">
+    </div>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="d-flex flex-wrap gap-2 justify-content-center mb-4" id="catTabs">
+    <button class="btn btn-success rounded-pill px-4 active-cat" data-cat="all" onclick="filterCat(this)">All</button>
+    <button class="btn btn-outline-success rounded-pill px-4" data-cat="portal" onclick="filterCat(this)">🌐 Portals</button>
+    <button class="btn btn-outline-success rounded-pill px-4" data-cat="helpline" onclick="filterCat(this)">📞 Helplines</button>
+    <button class="btn btn-outline-success rounded-pill px-4" data-cat="email" onclick="filterCat(this)">📧 Email</button>
+    <button class="btn btn-outline-success rounded-pill px-4" data-cat="insurance" onclick="filterCat(this)">🛡️ Insurance</button>
+    <button class="btn btn-outline-success rounded-pill px-4" data-cat="advisory" onclick="filterCat(this)">🌤️ Advisory</button>
+  </div>
+
+  <!-- Resource Cards -->
+  <div class="row g-4" id="resourceContainer">
+    {% for resource in resources %}
+    <div class="col-md-6 col-lg-4 resource-card" data-cat="{{ resource.category }}" data-name="{{ resource.name|lower }}">
+      <div class="card h-100 border-0 shadow-sm rounded-4 hover-card">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-start gap-3">
+            <div class="resource-icon fs-2">
+              {% if resource.category == 'portal' %}🌐
+              {% elif resource.category == 'helpline' %}📞
+              {% elif resource.category == 'email' %}📧
+              {% elif resource.category == 'insurance' %}🛡️
+              {% else %}🌤️{% endif %}
+            </div>
+            <div class="flex-grow-1">
+              <h6 class="fw-bold text-success mb-1">{{ resource.name }}</h6>
+              <p class="text-muted small mb-3">{{ resource.description }}</p>
+              <div class="d-flex flex-wrap gap-2 mt-auto">
+                {% if resource.helpline_number %}
+                <a href="tel:{{ resource.helpline_number }}" class="badge bg-success bg-opacity-10 text-success text-decoration-none px-3 py-2 rounded-pill border border-success">
+                  <i class="fas fa-phone-alt me-1"></i> {{ resource.helpline_number }}
+                </a>
+                {% endif %}
+                {% if resource.website_url %}
+                <a href="{{ resource.website_url }}" target="_blank" rel="noopener" class="badge bg-primary bg-opacity-10 text-primary text-decoration-none px-3 py-2 rounded-pill border border-primary">
+                  <i class="fas fa-external-link-alt me-1"></i> Visit Portal
+                </a>
+                {% endif %}
+                {% if resource.email %}
+                <a href="mailto:{{ resource.email }}" class="badge bg-warning bg-opacity-10 text-warning text-decoration-none px-3 py-2 rounded-pill border border-warning">
+                  <i class="fas fa-envelope me-1"></i> {{ resource.email }}
+                </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-top border-light px-4 py-2">
+          <small class="text-muted text-capitalize">
+            <i class="fas fa-tag me-1"></i>{{ resource.category }}
+          </small>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <i class="fas fa-exclamation-circle fa-3x text-muted mb-3"></i>
+      <p class="text-muted">No resources found. Please try again later.</p>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<style>
+.hover-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hover-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,128,60,0.15) !important; }
+.active-cat { background-color: #198754 !important; color: white !important; }
+</style>
+
+<script>
+function filterCat(btn) {
+  document.querySelectorAll('#catTabs button').forEach(b => {
+    b.classList.remove('active-cat','btn-success');
+    b.classList.add('btn-outline-success');
+  });
+  btn.classList.add('active-cat','btn-success');
+  btn.classList.remove('btn-outline-success');
+  filterResources();
+}
+
+function filterResources() {
+  const cat = document.querySelector('.active-cat').dataset.cat;
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.resource-card').forEach(card => {
+    const matchCat = cat === 'all' || card.dataset.cat === cat;
+    const matchSearch = card.dataset.name.includes(search);
+    card.style.display = (matchCat && matchSearch) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

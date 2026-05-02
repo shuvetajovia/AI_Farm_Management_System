@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+{% block main_class %}py-0{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section text-center position-relative overflow-hidden mb-5">
+    <div class="text-white border-0 py-5 position-relative overflow-hidden d-flex align-items-center justify-content-center"
+        style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&auto=format') no-repeat center center/cover; min-height: 55vh;">
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.4);"></div>
+        <div class="container py-4 position-relative z-1">
+            <h1 class="display-3 fw-bold mb-3 fade-in text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Smart
+                Agriculture Management</h1>
+            <p class="lead mb-5 fade-in mx-auto text-white"
+                style="max-width: 700px; font-weight: 300; opacity: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+                Monitor farms, analyze soil data, manage crops, and optimize resources with AI-driven insights.
+            </p>
+            <div class="d-flex justify-content-center gap-3 fade-in">
+                <a href="{% url 'farmers:profile' %}"
+                    class="btn btn-light text-success fw-bold px-4 py-3 shadow border-0 rounded-4">
+                    <i class="fas fa-tractor me-2"></i>My Farm
+                </a>
+                <a href="{% url 'recommendations:home' %}"
+                    class="btn btn-outline-light fw-bold px-4 py-3 rounded-4 backdrop-blur">
+                    <i class="fas fa-magic me-2"></i>Get Recommendations
+                </a>
+            </div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style="opacity: 0.1;">
+            <i class="fas fa-leaf position-absolute fa-10x"
+                style="top: -50px; left: -50px; transform: rotate(45deg);"></i>
+            <i class="fas fa-seedling position-absolute fa-10x"
+                style="bottom: -50px; right: -50px; transform: rotate(-25deg);"></i>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="container mt-2">
+    <div class="row g-4 text-center">
+
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column align-items-center p-4 hover-lift">
+                <div class="mb-3 p-3 rounded-circle bg-success bg-opacity-10 text-success shadow-sm">
+                    <i class="fas fa-tractor fs-2"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Farm Management</h5>
+                <p class="text-muted small mb-3">Manage profiles and land details efficiently.</p>
+                <a href="{% url 'farmers:profile' %}"
+                    class="btn btn-outline-success btn-sm rounded-pill mt-auto w-100">View Details</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column align-items-center p-4 hover-lift">
+                <div class="mb-3 p-3 rounded-circle bg-primary bg-opacity-10 text-primary shadow-sm">
+                    <i class="fas fa-flask fs-2"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Soil Analytics</h5>
+                <p class="text-muted small mb-3">Track nutrients and soil health records.</p>
+                <a href="{% url 'soil:list' %}" class="btn btn-outline-primary btn-sm rounded-pill mt-auto w-100">View
+                    Analysis</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column align-items-center p-4 hover-lift">
+                <div class="mb-3 p-3 rounded-circle bg-warning bg-opacity-10 text-warning shadow-sm">
+                    <i class="fas fa-wheat fs-2"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Crops</h5>
+                <p class="text-muted small mb-3">Explore catalog and plan seasons.</p>
+                <a href="{% url 'crops:list' %}" class="btn btn-outline-warning btn-sm rounded-pill mt-auto w-100">View
+                    Crops</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column align-items-center p-4 hover-lift">
+                <div class="mb-3 p-3 rounded-circle bg-info bg-opacity-10 text-info shadow-sm">
+                    <i class="fas fa-boxes fs-2"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Inventory</h5>
+                <p class="text-muted small mb-3">Manage seeds, fertilizers, and stocks.</p>
+                <a href="{% url 'inventory:list' %}"
+                    class="btn btn-outline-info btn-sm rounded-pill mt-auto w-100">Manage Stock</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="container my-5">
+    <div class="glass-card bg-white border-0 p-5">
+        <div class="row g-4 mb-5">
+  <div class="col-6 col-md-3">
+    <div class="stat-card card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+      <i class="fas fa-tractor fa-2x text-success mb-2"></i>
+      <div class="display-6 fw-bold text-success">{{ active_farms }}</div>
+      <small class="text-muted text-uppercase fw-semibold">Active Farms</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+      <i class="fas fa-seedling fa-2x text-primary mb-2"></i>
+      <div class="display-6 fw-bold text-primary">{{ crops_count }}</div>
+      <small class="text-muted text-uppercase fw-semibold">Crops in Database</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+      <i class="fas fa-flask fa-2x text-warning mb-2"></i>
+      <div class="display-6 fw-bold text-warning">{{ soil_records }}</div>
+      <small class="text-muted text-uppercase fw-semibold">Soil Records</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+      <i class="fas fa-shopping-cart fa-2x text-danger mb-2"></i>
+      <div class="display-6 fw-bold text-danger">{{ pending_orders }}</div>
+      <small class="text-muted text-uppercase fw-semibold">Pending Orders</small>
+    </div>
+  </div>
+</div>
+
+<style>
+.stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.10) !important; }
+</style>
+    </div>
+</section>
+
+<!-- ACTIONS -->
+<section class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="glass-card p-4 bg-gradient-success text-white border-0 h-100 position-relative overflow-hidden"
+                style="background: linear-gradient(135deg, #2E7D32, #66BB6A);">
+                <div class="position-relative z-1">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold m-0 text-white"><i class="fas fa-brain me-2"></i>Smart Recommendations</h4>
+                        <span class="badge bg-white text-success rounded-pill px-3 py-2">AI Powered</span>
+                    </div>
+                    <p class="text-white-50 mb-4" style="font-size: 1.1rem;">Get personalized crop and fertilizer
+                        suggestions based on your soil data.</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'recommendations:fertilizer_list' %}"
+                            class="btn btn-light rounded-pill px-4 py-2 fw-bold shadow-sm">Fertilizers</a>
+                        <a href="{% url 'recommendations:crop_list' %}"
+                            class="btn btn-outline-light rounded-pill px-4 py-2 hover-white">Crops</a>
+                    </div>
+                </div>
+                <i class="fas fa-seedling position-absolute text-white"
+                    style="bottom: -20px; right: -20px; font-size: 8rem; opacity: 0.1;"></i>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="glass-card p-4 bg-info text-white border-0 h-100 position-relative overflow-hidden"
+                style="background: linear-gradient(135deg, #0288D1, #26C6DA);">
+                <div class="position-relative z-1">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold m-0 text-white"><i class="fas fa-shopping-cart me-2"></i>Order Management
+                        </h4>
+                        <span class="badge bg-white text-info rounded-pill px-3 py-2">Active</span>
+                    </div>
+                    <p class="text-white-50 mb-4" style="font-size: 1.1rem;">Track progress of your agricultural orders
+                        and supplies efficiently.</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'orders:list' %}"
+                            class="btn btn-info rounded-pill px-4 py-2 fw-bold text-white shadow-sm">My Orders</a>
+                        <a href="{% url 'orders:create' %}"
+                            class="btn btn-outline-light rounded-pill px-4 py-2 hover-white">New Order</a>
+                    </div>
+                </div>
+                <i class="fas fa-truck position-absolute text-white"
+                    style="bottom: -20px; right: -20px; font-size: 8rem; opacity: 0.1;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="container mb-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h3 class="fw-bold m-0">Featured Products</h3>
+        <a href="{% url 'inventory:list' %}" class="text-success text-decoration-none fw-semibold">View All <i class="fas fa-arrow-right small ms-1"></i></a>
+    </div>
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden hover-lift">
+                <img src="{{ product.display_image }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
+                <div class="card-body">
+                    <span class="badge bg-light text-dark mb-2 border">{{ product.get_product_type_display }}</span>
+                    <h5 class="card-title fw-bold text-truncate" title="{{ product.name }}">{{ product.name }}</h5>
+                    <p class="text-success fw-bold mb-0">₹{{ product.price }} / {{ product.unit }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-5">
+            <i class="fas fa-box-open fa-3x mb-3 text-secondary" style="opacity: 0.5;"></i>
+            <p>No products available right now.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="text-center py-4 mt-auto text-muted">
+    <div class="container">
+        <p class="mb-1 fw-bold text-success">© 2026 Smart Agriculture Management System</p>
+        <p class="small text-secondary">Built with Django • MySQL • Machine Learning</p>
+    </div>
+</footer>
+
+<style>
+    .hover-lift {
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-8px);
+    }
+
+    .hover-white:hover {
+        background-color: white;
+        color: var(--text-primary) !important;
+    }
+
+    @media (min-width: 768px) {
+        .border-end-md {
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+    }
+</style>
+
+<script>
+document.querySelectorAll('.display-6').forEach(el => {
+  const target = parseInt(el.textContent) || 0;
+  let current = 0;
+  const step = Math.max(1, Math.floor(target / 30));
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = current;
+    if (current >= target) clearInterval(timer);
+  }, 40);
+});
+</script>
+
+{% endblock %}

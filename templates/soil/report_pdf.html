@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Soil Health Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+
+            @frame footer_frame {
+                -pdf-frame-content: footerContent;
+                bottom: 1cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 1cm;
+            }
+        }
+
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 10pt;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .header-section {
+            border-bottom: 2px solid #2E7D32;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .report-title {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #2E7D32;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .sub-title {
+            font-size: 10pt;
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .meta-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .meta-table td {
+            padding: 5px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            width: 120px;
+        }
+
+        .section-header {
+            background-color: #EEE;
+            color: #000;
+            font-weight: bold;
+            padding: 5px 10px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-left: 5px solid #2E7D32;
+            text-transform: uppercase;
+            font-size: 11pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+            font-size: 9pt;
+            font-weight: bold;
+        }
+
+        td {
+            border-bottom: 1px solid #eee;
+            padding: 8px;
+            font-size: 9pt;
+        }
+
+        .status-optimal {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+
+        .status-low {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+
+        .status-high {
+            color: #F57C00;
+            font-weight: bold;
+        }
+
+        .status-medium {
+            color: #1976D2;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 8pt;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .disclaimer {
+            font-size: 7pt;
+            color: #999;
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header-section">
+        <div class="report-title">Soil Health & Crop Recommendation Report</div>
+        <div class="sub-title">Laboratory Analysis Reference: #{{ object.id|stringformat:"06d" }}</div>
+    </div>
+
+    <table class="meta-table">
+        <tr>
+            <td class="label">Date of Report:</td>
+            <td>{% now "F j, Y" %}</td>
+            <td class="label">Sample Date:</td>
+            <td>{{ object.date_tested|date:"F j, Y" }}</td>
+        </tr>
+        <tr>
+            <td class="label">Farmer Name:</td>
+            <td>{{ object.land.farmer.user.get_full_name|default:object.land.farmer.user.username }}</td>
+            <td class="label">Land / Farm ID:</td>
+            <td>{{ object.land.name }} ({{ object.land.area }} Acres)</td>
+        </tr>
+        <tr>
+            <td class="label">Location:</td>
+            <td>{{ object.land.location }}</td>
+            <td class="label">Soil Type:</td>
+            <td>{{ object.land.soil_type }}</td>
+        </tr>
+    </table>
+
+    <div class="section-header">1. Soil Parameter Analysis</div>
+    <table>
+        <thead>
+            <tr>
+                <th width="30%">Parameter</th>
+                <th width="20%">Observed Value</th>
+                <th width="30%">Standard Ideal Range</th>
+                <th width="20%">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Soil pH</td>
+                <td>{{ object.ph_level }}</td>
+                <td>6.0 - 7.5</td>
+                <td>
+                    {% if object.ph_level < 6.0 %}<span class="status-low">Acidic</span>
+                        {% elif object.ph_level > 7.5 %}<span class="status-high">Alkaline</span>
+                        {% else %}<span class="status-optimal">Optimal</span>{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Nitrogen (N)</td>
+                <td>{{ object.nitrogen }} ppm</td>
+                <td>280 - 560 ppm</td>
+                <td>
+                    {% if object.nitrogen < 280 %}<span class="status-low">Low</span>
+                        {% elif object.nitrogen > 560 %}<span class="status-high">High</span>
+                        {% else %}<span class="status-medium">Medium</span>{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Phosphorus (P)</td>
+                <td>{{ object.phosphorus }} ppm</td>
+                <td>10 - 25 ppm</td>
+                <td>
+                    {% if object.phosphorus < 10 %}<span class="status-low">Low</span>
+                        {% elif object.phosphorus > 25 %}<span class="status-high">High</span>
+                        {% else %}<span class="status-medium">Medium</span>{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Potassium (K)</td>
+                <td>{{ object.potassium }} ppm</td>
+                <td>110 - 280 ppm</td>
+                <td>
+                    {% if object.potassium < 110 %}<span class="status-low">Low</span>
+                        {% elif object.potassium > 280 %}<span class="status-high">High</span>
+                        {% else %}<span class="status-medium">Medium</span>{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Organic Carbon</td>
+                <td>{{ object.organic_carbon|default:"--" }} %</td>
+                <td>0.5% - 0.75%</td>
+                <td>
+                    {% if not object.organic_carbon %}Not Analyzed
+                    {% elif object.organic_carbon < 0.5 %}<span class="status-low">Low</span>
+                        {% elif object.organic_carbon > 0.75 %}<span class="status-high">High</span>
+                        {% else %}<span class="status-optimal">Sufficient</span>{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Moisture</td>
+                <td>{{ object.moisture }} %</td>
+                <td>--</td>
+                <td>Recorded</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="section-header">2. Soil Health Interpretation</div>
+    <div style="padding: 10px; font-size: 9pt;">
+        {% if object.ph_level < 6.0 %} <p><strong>Acidity:</strong> Soil is acidic. Liming is recommended to neutralize
+            pH and improve nutrient availability.</p>
+            {% elif object.ph_level > 7.5 %}
+            <p><strong>Alkalinity:</strong> Soil is alkaline. Application of gypsum or organic matter may help lower pH.
+            </p>
+            {% else %}
+            <p><strong>pH Balance:</strong> Soil pH is within the optimal range for most crops.</p>
+            {% endif %}
+
+            {% if object.nitrogen < 280 %} <p><strong>Nitrogen:</strong> Levels are low. Nitrogen-rich fertilizers
+                (Urea) or leguminous cover crops are advised.</p>
+                {% endif %}
+
+                {% if object.notes %}
+                <p><strong>Lab Notes:</strong> {{ object.notes }}</p>
+                {% endif %}
+    </div>
+
+    <div class="section-header">3. Crop Recommendations</div>
+    {% if crop_recs %}
+    <table>
+        {% for crop_rec in crop_recs %}
+        <tr>
+            <td class="label">Recommended Crop:</td>
+            <td><strong>{{ crop_rec.crop.name }}</strong> ({{ crop_rec.suitability }} - Score: {{ crop_rec.score }}/10)</td>
+        </tr>
+        <tr>
+            <td class="label">Basis of Recommendation:</td>
+            <td style="padding-bottom: 15px; border-bottom: 1px dotted #ccc;">{{ crop_rec.reason }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="padding: 10px; color: #666; font-style: italic;">No specific crop recommendation could be generated based
+        on these parameters.</p>
+    {% endif %}
+
+    <div class="section-header">4. Fertilizer Advisory</div>
+    {% if fert_recs %}
+        {% for fert_rec in fert_recs %}
+        <div style="background-color: #f8f9fa; padding: 5px 10px; margin-top: 15px; border-left: 3px solid #1976D2; font-weight: bold;">
+            For {{ fert_rec.crop.name|default:"Selected Crop" }}
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nutrient</th>
+                    <th>Recommended Dosage (kg/acre)</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Nitrogen (N)</td>
+                    <td>{{ fert_rec.nitrogen_recommended }}</td>
+                    <td>Split application.</td>
+                </tr>
+                <tr>
+                    <td>Phosphorus (P)</td>
+                    <td>{{ fert_rec.phosphorus_recommended }}</td>
+                    <td>Basal application.</td>
+                </tr>
+                <tr>
+                    <td>Potassium (K)</td>
+                    <td>{{ fert_rec.potassium_recommended }}</td>
+                    <td>As per stage.</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if fert_rec.fertilizer_suggestions %}
+        <div style="padding: 10px; font-size: 9pt;">
+            <strong>Recommended Products:</strong>
+            <ul>
+                {% for suggestion in fert_rec.fertilizer_suggestions %}
+                <li>{{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% if fert_rec.notes %}
+        <p style="padding: 10px; font-size: 9pt; margin-bottom: 20px; border-bottom: 1px dotted #ccc;"><strong>Analysis:</strong> {{ fert_rec.notes }}</p>
+        {% endif %}
+        {% endfor %}
+    {% else %}
+    <p style="padding: 10px; color: #666; font-style: italic;">No fertilizer schedule generated.</p>
+    {% endif %}
+
+    <div id="footerContent" class="footer">
+        This report is generated by a Smart Agriculture Decision Support System.<br>
+        Recommendations are advisory and should be validated with local agricultural experts.<br>
+        <div class="disclaimer">Generated on {% now "Y-m-d H:i:s" %} | System ID: SA-{{ object.pk }}</div>
+    </div>
+</body>
+
+</html>

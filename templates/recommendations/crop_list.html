@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Crop Recommendations{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Crop Recommendations</h3>
+    </div>
+    <div class="card-body">
+        {% if object_list %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Land</th>
+                        <th>Recommended Crop</th>
+                        <th>Date</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rec in object_list %}
+                        <tr>
+                            <td>{{ rec.land.name }}</td>
+                            <td>{{ rec.recommended_crop.name }}</td>
+                            <td>{{ rec.date_recommended }}</td>
+                            <td>{{ rec.reason }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No recommendations available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

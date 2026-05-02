@@ -1,0 +1,58 @@
+[
+{
+  "model": "crops.crop",
+  "pk": 1,
+  "fields": {
+    "name": "Wheat",
+    "scientific_name": "Triticum aestivum",
+    "season": "rabi",
+    "description": "A cereal grain",
+    "optimal_ph_min": "6.00",
+    "optimal_ph_max": "7.50",
+    "nitrogen_requirement": "120.00",
+    "phosphorus_requirement": "60.00",
+    "potassium_requirement": "40.00"
+  }
+},
+{
+  "model": "crops.crop",
+  "pk": 2,
+  "fields": {
+    "name": "Rice",
+    "scientific_name": "Oryza sativa",
+    "season": "kharif",
+    "description": "A staple food",
+    "optimal_ph_min": "5.50",
+    "optimal_ph_max": "6.50",
+    "nitrogen_requirement": "100.00",
+    "phosphorus_requirement": "50.00",
+    "potassium_requirement": "50.00"
+  }
+},
+{
+  "model": "inventory.product",
+  "pk": 1,
+  "fields": {
+    "name": "Urea Fertilizer",
+    "product_type": "fertilizer",
+    "description": "Nitrogen fertilizer",
+    "price": "50.00",
+    "unit": "kg",
+    "stock_quantity": 100,
+    "reorder_level": 20
+  }
+},
+{
+  "model": "inventory.product",
+  "pk": 2,
+  "fields": {
+    "name": "Rice Seeds",
+    "product_type": "seed",
+    "description": "High yield rice seeds",
+    "price": "200.00",
+    "unit": "kg",
+    "stock_quantity": 50,
+    "reorder_level": 10
+  }
+}
+]

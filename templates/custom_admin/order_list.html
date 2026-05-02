@@ -1,0 +1,84 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Orders{% endblock %}
+{% block header %}Order Management{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light bg-opacity-50">
+                    <tr>
+                        <th class="ps-4 py-3">Order ID</th>
+                        <th class="py-3">Farmer</th>
+                        <th class="py-3">Date</th>
+                        <th class="py-3">Amount</th>
+                        <th class="py-3">Status</th>
+                        <th class="pe-4 py-3 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr class="{% if order.is_deleted %}table-danger bg-danger bg-opacity-10{% endif %}">
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">#{{ order.id }}</div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center me-2 small"
+                                    style="width: 32px; height: 32px;">
+                                    {{ order.farmer.username|make_list|first|upper }}
+                                </div>
+                                <span class="small fw-semibold">{{ order.farmer.username }}</span>
+                            </div>
+                        </td>
+                        <td>{{ order.order_date|date:"M d, Y" }}</td>
+                        <td class="fw-bold">₹{{ order.total_amount }}</td>
+                        <td>
+                            {% if order.is_deleted %}
+                            <span class="badge bg-danger rounded-pill">Deleted</span>
+                            {% else %}
+                            <span
+                                class="badge {% if order.status == 'delivered' %}bg-success{% elif order.status == 'pending' %}bg-warning text-dark{% elif order.status == 'cancelled' %}bg-secondary{% else %}bg-info{% endif %} rounded-pill text-uppercase">
+                                {{ order.status }}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4 text-end">
+                            {% if order.is_deleted %}
+                            <form method="POST" action="{% url 'custom_admin:order_restore' order.pk %}"
+                                class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-outline-success hover-lift" title="Restore">
+                                    <i class="fas fa-undo me-1"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                            <a href="{% url 'custom_admin:order_update' order.pk %}"
+                                class="btn btn-sm btn-light text-primary hover-lift me-1" title="Update Status">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form method="POST" action="{% url 'custom_admin:order_delete' order.pk %}" class="d-inline"
+                                onsubmit="return confirm('Soft-delete this order?');">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-light text-danger hover-lift" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="fas fa-shopping-cart me-2"></i>No orders found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

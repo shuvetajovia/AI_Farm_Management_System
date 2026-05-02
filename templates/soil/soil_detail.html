@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Soil Data Detail{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Soil Data for {{ object.land.name }}</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>Date Tested:</strong> {{ object.date_tested }}</p>
+        <p><strong>pH Level:</strong> {{ object.ph_level }}</p>
+        <p><strong>Nitrogen:</strong> {{ object.nitrogen }} ppm</p>
+        <p><strong>Phosphorus:</strong> {{ object.phosphorus }} ppm</p>
+        <p><strong>Potassium:</strong> {{ object.potassium }} ppm</p>
+        <p><strong>Moisture:</strong> {{ object.moisture }}%</p>
+        <p><strong>Notes:</strong> {{ object.notes }}</p>
+        <a href="{% url 'soil:update' object.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'soil:report' object.pk %}" class="btn btn-success"><i class="fas fa-file-pdf me-1"></i>
+            Download Report</a>
+        <a href="{% url 'soil:list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

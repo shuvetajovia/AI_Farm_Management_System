@@ -1,0 +1,41 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Update Order{% endblock %}
+{% block header %}Update Order #{{ object.id }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-5">
+                <div class="mb-4 text-center">
+                    <div class="display-6 fw-bold mb-1">₹{{ object.total_amount }}</div>
+                    <div class="text-muted small">Placed by {{ object.farmer.username }} on {{ object.order_date|date:"M
+                        d, Y" }}</div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary text-uppercase small ls-1">Order Status</label>
+                        <select name="status" class="form-select form-select-lg">
+                            {% for value, label in form.fields.status.choices %}
+                            <option value="{{ value }}" {% if form.status.value==value %}selected{% endif %}>{{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-premium btn-lg shadow-sm">
+                            Update Status
+                        </button>
+                        <a href="{% url 'custom_admin:order_list' %}" class="btn btn-light text-muted">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

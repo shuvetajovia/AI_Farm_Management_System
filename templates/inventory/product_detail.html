@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{ object.display_image }}" class="img-fluid rounded" alt="{{ object.name }}">
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ object.name }}</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Type:</strong> {{ object.get_product_type_display }}</p>
+                <p><strong>Description:</strong> {{ object.description }}</p>
+                <p><strong>Price:</strong> ₹{{ object.price }} per {{ object.unit }}</p>
+                <p><strong>Stock:</strong> {{ object.stock_quantity }} {{ object.unit }}</p>
+                <p><strong>Reorder Level:</strong> {{ object.reorder_level }}</p>
+                {% if object.is_low_stock %}
+                    <div class="alert alert-warning">Low stock! Reorder needed.</div>
+                {% endif %}
+                <a href="{% url 'inventory:list' %}" class="btn btn-secondary">Back to List</a>
+                <a href="{% url 'orders:create' %}" class="btn btn-primary ms-2">Order Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

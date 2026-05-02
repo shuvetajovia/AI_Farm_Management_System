@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard - Smart Agriculture{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Welcome Section -->
+    <div class="glass-card p-4 rounded-4 mb-4 fade-in position-relative overflow-hidden">
+        <div class="position-relative z-1 row align-items-center">
+            <div class="col-md-8">
+                <h2 class="fw-bold text-success mb-2">Welcome back, {{ object.user.username }}! 👋</h2>
+                <p class="text-secondary mb-0">Here's what's happening on your farm today.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{% url 'farmers:profile_edit' %}"
+                    class="btn btn-outline-success rounded-pill px-4 shadow-sm">
+                    <i class="fas fa-edit me-2"></i>Edit Profile
+                </a>
+            </div>
+        </div>
+        <i class="fas fa-sun position-absolute text-warning"
+            style="top: -20px; right: -20px; font-size: 10rem; opacity: 0.1;"></i>
+    </div>
+
+    <div class="row g-4">
+        <!-- Profile Details Card -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 h-100 fade-in" style="animation-delay: 100ms;">
+                <h5 class="fw-bold mb-4 text-danger border-bottom pb-2">
+                    <i class="fas fa-id-card me-2"></i>Farmer Profile
+                </h5>
+
+                <div class="d-flex align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border border-light">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3 text-success">
+                        <i class="fas fa-user-circle fs-3"></i>
+                    </div>
+                    <div>
+                        <small class="text-uppercase text-muted ls-1" style="font-size: 0.7rem;">Full Name</small>
+                        <h6 class="fw-bold mb-0 text-dark">{{ object.user.first_name }} {{ object.user.last_name }}</h6>
+                    </div>
+                </div>
+
+                <div class="mb-3 px-2">
+                    <small class="text-uppercase text-muted ls-1" style="font-size: 0.7rem;"><i
+                            class="fas fa-envelope me-2"></i>Contact Email</small>
+                    <p class="fw-bold mb-1 text-dark">{{ object.user.email }}</p>
+                </div>
+
+                <div class="mb-3 px-2">
+                    <small class="text-uppercase text-muted ls-1" style="font-size: 0.7rem;"><i
+                            class="fas fa-phone me-2"></i>Phone Number</small>
+                    <p class="fw-bold mb-1 text-dark">{{ object.phone }}</p>
+                </div>
+
+                <div class="mb-3 px-2">
+                    <small class="text-uppercase text-muted ls-1" style="font-size: 0.7rem;"><i
+                            class="fas fa-map-marker-alt me-2"></i>Address</small>
+                    <p class="fw-bold mb-1 text-dark">{{ object.address }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fast Stats & Actions -->
+        <div class="col-lg-8">
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="glass-card p-4 fade-in h-100"
+                        style="animation-delay: 200ms; border-left: 5px solid #2E7D32;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="text-uppercase text-secondary ls-1 mb-0">Total Land</h6>
+                            <div class="bg-success bg-opacity-10 p-2 rounded-circle">
+                                <i class="fas fa-map-marked-alt text-success fs-5"></i>
+                            </div>
+                        </div>
+                        <h2 class="fw-bold text-dark mb-1">{{ object.total_land_area }} <span
+                                class="fs-6 text-muted">Acres</span></h2>
+                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2">
+                            <i class="fas fa-check me-1"></i>Active
+                        </span>
+                    </div>
+                </div>
+                <!-- Placeholder for future stats like 'Crops Planted' or 'Reports' -->
+                <div class="col-md-6">
+                    <div class="glass-card p-4 fade-in h-100"
+                        style="animation-delay: 300ms; border-left: 5px solid #1976D2;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="text-uppercase text-secondary ls-1 mb-0">Soil Reports</h6>
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-circle">
+                                <i class="fas fa-file-invoice text-primary fs-5"></i>
+                            </div>
+                        </div>
+                        <h2 class="fw-bold text-dark mb-1">{{ soil_reports_count }}</h2>
+                        <a href="{% url 'soil:list' %}"
+                            class="badge bg-primary text-white rounded-pill px-2 text-decoration-none hover-shadow">
+                            View Reports <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="glass-card p-4 fade-in" style="animation-delay: 400ms;">
+                <h5 class="fw-bold mb-4 text-primary border-bottom pb-2">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a href="{% url 'farmers:land_list' %}"
+                            class="btn btn-custom w-100 py-3 d-flex align-items-center justify-content-center shadow-hover">
+                            <i class="fas fa-tractor me-2"></i> Manage Lands
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'soil:create' %}"
+                            class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center hover-scale shadow-sm text-uppercase fw-bold"
+                            style="border-width: 2px;">
+                            <i class="fas fa-flask me-2"></i> New Soil Test
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .shadow-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+    }
+</style>
+{% endblock %}
