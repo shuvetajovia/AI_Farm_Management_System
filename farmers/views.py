@@ -50,11 +50,18 @@ class LandListView(LoginRequiredMixin, ListView):
         return Land.objects.filter(farmer__user=self.request.user)
 
 class LandCreateView(LoginRequiredMixin, CreateView):
+    
     model = Land
     fields = ['name', 'area', 'soil_type', 'location', 'latitude', 'longitude']
     template_name = 'farmers/land_form.html'
     success_url = reverse_lazy('farmers:land_list')
 
+    def get(self, request, *args, **kwargs):
+        from .models import FarmerProfile
+        if not FarmerProfile.objects.filter(user=request.user).exists():
+                messages.warning(request,'Create your farmer profile first.')
+            return redirect('farmers:profile_create')
+        return super().get(request, *args, **kwargs)
     def form_valid(self, form):
         farmer_profile = get_object_or_404(FarmerProfile, user=self.request.user)
         form.instance.farmer = farmer_profile
