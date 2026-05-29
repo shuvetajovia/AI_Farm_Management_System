@@ -4,3 +4,6 @@ xhtml2pdf>=0.2.11
 reportlab>=4.0
 django-crispy-forms>=2.0
 crispy-bootstrap5>=0.7
+pymysql>=1.1
+requests>=2.31
+python-decouple>=3.8
